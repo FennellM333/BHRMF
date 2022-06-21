@@ -13,4 +13,10 @@ rhoBH = sl[blackhole[0]]['rhoform']
 x = np.log10(rhoBH)
 y = np.log10(tempBH)
 
-plt.hist2d(x,y,bins = 250)
+plt.hist2d(x,y,bins = 250, range = [[6,10],[1.4,3.5]])
+plt.xlim([6,10])
+plt.ylim([1.4,3.5])
+
+plt.xlabel("Density")
+plt.ylabel("Temperature")
+plt.show()

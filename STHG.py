@@ -13,4 +13,7 @@ rhoST = sl[star[0]]['rhoform']
 x = np.log10(rhoST)
 y = np.log10(tempST)
 
-plt.hist2d(x,y,bins = 250)
+plt.hist2d(x,y,bins = 250, range = [[6,10],[1.4,3.5]])
+plt.xlabel("Density")
+plt.ylabel("Temperature")
+plt.show()
