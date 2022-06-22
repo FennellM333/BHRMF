@@ -18,7 +18,7 @@ def findBH(s):
     return BH
 
 def findBHhalos(s,BH):
-    BHhalos = BH['amiga group']
+    BHhalos = BH['amiga.grp']
     return BHhalos
 
 for i in range(nfilenames)
