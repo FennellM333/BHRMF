@@ -21,16 +21,15 @@ def findBHhalos(s,BH):
     BHhalos = BH['amiga group']
     return BHhalos
 
-#defines parts of the BHhalo finder
-h = s.halos()
-s.physical_units()
-BHfilter = np.where((s.stars['iord']==BHiordlist[k])|(s.stars['iord']==BHiordlist[k+1]))
-BH =  s.stars[BHfilter]
-BHhalos = findBHhalos(s, BH)
+for i in range(nfilenames)
+ #defines parts of the BHhalo finder
+   h = s.halos()
+   s.physical_units()
+   BHfilter = np.where((s.stars['iord']==BHiordlist[k])|(s.stars['iord']==BHiordlist[k+1]))
+   BH =  s.stars[BHfilter]
+   BHhalos = findBHhalos(s, BH)
+
 
 # not quite sure how to run these commands in the format they're in, these are placeholders
-findBH(s)
-
-findBHhalos(s,BH) 
 
 pynbody.plot.image() 
