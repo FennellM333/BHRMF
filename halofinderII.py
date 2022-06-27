@@ -27,7 +27,7 @@ BH =  s.stars[BHfilter]
 BHhalos = findBHhalos(s, BH)
 
 print(type(BHhalos)
-"""" for center distance, find out what halos as in h1, h2, h3, etc... have the blackholes in them,
-then make the center of the snapshot the center of each galaxy, then calculate the distance from the center
-"for i in BHhalos..."  then use that sqrt i^2 j^2 k^2 from marcus' code for distance""" 
+#for center distance, find out what halos as in h1, h2, h3, etc... have the blackholes in them,
+#then make the center of the snapshot the center of each galaxy, then calculate the distance from the center
+#"for i in BHhalos..."  then use that sqrt i^2 j^2 k^2 from marcus' code for distance
 
