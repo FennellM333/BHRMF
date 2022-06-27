@@ -29,4 +29,3 @@ BH =  s.stars[BHfilter]
 BHhalos = findBHhalos(s, BH)
 
 print(type(BHhalos))
-print(type(BHhalos['tform']))
