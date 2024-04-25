@@ -17,7 +17,7 @@ files = '/mnt/data0/jillian/h568/productionrun/files.list'
 files = np.genfromtxt(files, dtype='str')
 
 dCen=[]
-
+BHid=[]
 
 # function to find black hole
 def findBH(s):
@@ -39,12 +39,15 @@ def getz(s):
 def gettime(s):
     return pynbody.analysis.cosmology.age(s)
 
+print('loop begins')
+
 f =  open("bhfile.dat", "w+") 
 for file in files:
     
     # loading the snapshotS
     s =pynbody.load('/mnt/data0/jillian/h568/productionrun/'+file)
- 
+    print("loaded snapshot", s)
+    
     # convert the units 
     s.physical_units()
 
@@ -52,16 +55,20 @@ for file in files:
     h = s.halos()
     BH = findBH(s)
     BHhalos = findBHhalos(s)
+    
+    print("BHhalos", BHhalos)
+    
     #sorting the halos, indexes/indecis are like an exact address
     currenthalo = np.argsort(BHhalos)
-    print (BHhalos[currenthalo])
-
+    print ('current halo', BHhalos[currenthalo])
+    
+    
     for i in currenthalo:
     
         #which halo are we on?
         currenthalo = BHhalos[i]
         print ('current halo: ', currenthalo)
-        print (i)
+        print ('iterant',i)
     
         #put the galaxy you care about in the center of the simulation
         pynbody.analysis.angmom.faceon(h[currenthalo])
@@ -91,21 +98,24 @@ for file in files:
     
         data = [currenthalo, BH['iord'][i], gettime(s),getz(s), BH['mass'][i], BH['r'][i], starmass, gasmass, virialmass] 
         
+        dCen.append(distance)
+        BHid.append(BH['iord'][i])
         
         data= str(data)
         data= data[1:-1]
         f.write(data+'\n')
         t = BH['age']
-        print(t)
-        print (data)
-         
-
+        print('age of BH', t)
+        print ('BH datamass', data)
+        
+try:
 with open('foundTL.txt' , 'w') as f:
     f.write("       |BH ID|          |Galaxy ID|   |Distance from Center|   \n") 
     for a,b,c in zip(BHid,BHhalos,dCen):
         f.write('{0:15}{1:15}         {2:.5}\n'.format(a,b,c))  
-f.close()
-
+except Exception as e:
+    print(f"Error: {e}")
+    
 """
 # Loading files
 #files = ('/media/jillian/cptmarvel/cptmarvel.cosmo25cmb.4096g5HbwK1BH.orbit')
