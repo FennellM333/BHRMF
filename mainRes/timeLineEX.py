@@ -11,9 +11,10 @@ import csv
 #resultdataset = npd.equal(dataset1, dataset2)
 
 files = '/mnt/data0/jillian/h568/productionrun/files.list'
-files = np.genfromtxt(files, dtype='str')
+files = np.genfromtxt(files, dtype='str') #creates an array from the loaded string
 
-files = files['#']
+files = files['#'] #choses which snapshot to use, manually input, there was once a version of this code with a loop which went through each snapshot, It does work, but takes hours.
+
 
 #creating an array to put all the distance results into
 dCen=[]
@@ -22,15 +23,15 @@ timeBH=[]
 
 # function to find black hole
 def findBH(s):
-    BHfilter = pynbody.filt.LowPass('tform',0.0)
-    BH = s.stars[BHfilter]
+    BHfilter = pynbody.filt.LowPass('tform',0.0) #creates a filter describing what a black hole means within the simulation.
+    BH = s.stars[BHfilter] #filters out all the stars that do not fit black hole criteria
     return BH
 print("defined BHs")
 
 #function to find the halos that the galaxy is in
 def findBHhalos(s):
     BH = findBH(s)
-    BHhalos = BH['amiga.grp']
+    BHhalos = BH['amiga.grp'] #amiga grp refers to the gas, stars, and dark matter around  black hole.
     return BHhalos
 print("define halos")
 #using the function the halos
