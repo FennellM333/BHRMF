@@ -1,101 +1,109 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pynbody 
+import pynbody
 
 # Define directories and files
-
 file = "/mnt/data0/jillian/h568/productionrun/h568.cosmo75.4096gsHsbBH.000464"
 s = pynbody.load(file)
-print(s) 
-s.physical_units
+s.physical_units()
+halos = np.loadtxt('haloIDI.txt', dtype=np.int32)
+starHalos = list(halos)
 
-h = s.halos()
-print(len(h))
+# New halo array
+h = pynbody.halo.ahf.AHFCatalogue(s)
 
+print("Number of starHalos:", len(starHalos))
+
+# Loop through each halo and find its mass
+hMass = []
+for i in starHalos:
+    try:
+        mHalo = h[i].properties['mass']
+        hMass.append(mHalo)
+    except (ValueError, KeyError):
+        continue
+
+print("Number of hMass:", len(hMass))
+
+# Defines black holes in the simulation
 def findBH(s):
-    BHfilter = pynbody.filt.LowPass('tform',0.0)
+    BHfilter = pynbody.filt.LowPass('tform', 0.0)
     BH = s.stars[BHfilter]
     return BH
-print("defined BHs")
-BH= findBH(s)
+
+BH = findBH(s)
 BHid = BH['iord']
-#function to find the halos that have blackholes
-def findBHhalos(s):
-    BH = findBH(s)
+
+# Function to find the halos that have black holes
+def locBHhalos(BH):
     BHhalos = BH['amiga.grp']
+    BHhalos = np.unique(BHhalos)
     return BHhalos
-print("define halos")
-#using the function the halos
-BHhalos = findBHhalos(s)
-print(len(BHhalos))
 
-hMass = []
-for i in range(1, len(h) + 1):
+BHhalos = locBHhalos(BH)
+print("Defined BH halos:", BHhalos)
+
+# Finding the mass of black holes
+BHaloMass = []
+for i in range(len(BHhalos)):
     try:
-        hMass.append(h[i]['mass'])
-        print(i)
-    except ValueError:
-        # Skip this index if it does not exist
+        BHaloMass.append(h[BHhalos[i]].properties['mass'])
+    except (ValueError, KeyError):
         continue
-    
-#binning masses randomly for now
-print("all mass values:", hMass)
-m1, m2, m3, m4 = map(list, zip(*zip(*[iter(hMass)]*4)))
 
-#uisng this for the BH fraction of each bin
-num1halo= len(m1)
-num2halo= len(m2)
-num3halo= len(m3)
-num4halo= len(m4)
+print("Number of BHaloMass:", len(BHaloMass))
 
-print("halos in group 1", num1halo)
-print("halos in group 2", num2halo)
-print("halos in group 3", num3halo)
-print("halos in group 4", num4halo)
+# Flatten the arrays
+hMass = np.array(hMass).flatten()
+BHMass = np.array(BHaloMass).flatten()
 
-#black hole count for ratio
-m1BH = findBHhalos(m1)
-m2BH= findBHhalos(m2)
-m3BH= findBHhalos(m3)
-m4BH= findBHhalos(m4)
+# Combine the arrays
+bothMass = np.concatenate((hMass, BHMass))
 
-num1BH= len(m1BH)
-num2BH= len(m2BH)
-num3BH= len(m3BH)
-num4BH= len(m4BH)
+# Number of bins
+numBins = 5
 
-print("black holes in group 1", num1BH)
-print("black holes in group 2", num2BH)
-print("black holes in group 3", num3BH)
-print("black holes in group 4", num4BH)
+# Sort the combined array
+sorted_masses = np.sort(bothMass)
 
-#BH fraction
-fract1 = num1BH/num1halo
-fract2 = num2BH/num2halo
-fract3 = num3BH/num3halo
-fract4 = num4BH/num4halo
+# Split the sorted array into bins with an even distribution of points
+bins = np.array_split(sorted_masses, numBins)
 
+# Function to determine the bin edges from sorted masses
+bin_edges = [bin[0] for bin in bins]
+bin_edges.append(bins[-1][-1])  # Add the last edge
 
-m1p = mean(m1)
-m2p = mean(m2)
-m3p = mean(m3)
-m4p = mean(m4)
+print("Bin edges:", bin_edges)
 
-fractG= [fract1,fract2,fract3,fract4]
-mG= [m1p,m2p,m3p,m4p]
+# Create a function to assign original masses to bins
+def assign_to_bins(mass_array, bin_edges):
+    bin_indices = np.digitize(mass_array, bin_edges) - 1
+    bins = [mass_array[bin_indices == i] for i in range(len(bin_edges) - 1)]
+    return bins
 
-print("fractG", fractG)
-print("mG", mG)
+# Assign hMass and BHMass to bins
+hMassBin = assign_to_bins(hMass, bin_edges)
+BHMassBin = assign_to_bins(BHMass, bin_edges)
 
-plt.figure(figsize=(10, 6))
-plt.errorbar(fractG,mG)
+# Verify results
+print("hMassBin counts:", [len(bin) for bin in hMassBin])
+print("BHMassBin counts:", [len(bin) for bin in BHMassBin])
+
+avgMass = [(np.mean(np.concatenate((hMassBin[i], BHMassBin[i]))) if len(hMassBin[i]) + len(BHMassBin[i]) > 0 else 0) for i in range(numBins)]
+avgLMass = np.log10(avgMass)
+print("Average log mass per bin:", avgLMass)
+
+numHalos = [len(hMassBin[i]) for i in range(numBins)]
+numBH = [len(BHMassBin[i]) for i in range(numBins)]
+print("Number of halos per bin:", numHalos)
+print("Number of BHs per bin:", numBH)
+
+bhFract = [numBH[i] / numHalos[i] if numHalos[i] > 0 else 0 for i in range(numBins)]
+print("BH fractions per bin:", bhFract)
+
+plt.plot(avgLMass, bhFract, marker='o')
 plt.yscale('log')
-plt.xscale('linear')
-plt.ylim(1e-5, 2)
-plt.xlim(6, 12.5)
-plt.xlabel('log Halo Mass (M☉)')
+plt.xlabel('Mean Mass (M☉)')
 plt.ylabel('BH Fraction')
-plt.title('Occupation Fraction')
-plt.grid(True)
-plt.savefig('occupationfraction.png')
+plt.title("BH Fraction Graph")
 plt.show()
