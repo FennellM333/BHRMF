@@ -8,8 +8,10 @@ s = pynbody.load(file)
 s.physical_units()
 
 h = s.halos()
-print(f"Total number of halos: {len(h)}")
 
+print(h)
+print(f"Total number of halos: {len(h)}")
+"""
 #removing no-stars
 def starFilter(halos):
     hStars = []
@@ -25,6 +27,10 @@ def starFilter(halos):
 
 h = starFilter(h)
 print(f"Total number of halos with stars: {len(h)}")
+
+with open("haloIDI.txt", "w") as f:
+    for halo in h:
+     f.write(str(halo.properties['halo_id']) + "\n")
 
 # Function to find black holes
 def findBH(s):
@@ -110,3 +116,4 @@ plt.xlabel('Mean Mass (M☉)')
 plt.ylabel('BH Fraction')
 plt.title("BH Fraction Graph")
 plt.show()
+"""

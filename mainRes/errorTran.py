@@ -100,10 +100,15 @@ print("Number of BHs per bin:", numBH)
 
 bhFract = [numBH[i] / numHalos[i] if numHalos[i] > 0 else 0 for i in range(numBins)]
 print("BH fractions per bin:", bhFract)
-
+plt.rc('xtick', labelsize = 9)
+plt.rc('ytick', labelsize = 9)
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 13}
+plt.rc('font', **font)
 plt.plot(avgLMass, bhFract, marker='o')
-plt.yscale('log')
-plt.xlabel('Mean Mass (M☉)')
-plt.ylabel('BH Fraction')
-plt.title("BH Fraction Graph")
+#plt.yscale('log')
+plt.xlabel('Log Halo Mass (M☉)')
+plt.ylabel('BH Occupation Fraction')
+plt.title("BH Occupation Fraction")
 plt.show()
