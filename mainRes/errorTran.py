@@ -141,10 +141,9 @@ print("xVals", xVals)
 #print("Average log mass per bin:", avgLMass)
 
 
-plt.rc('xtick', labelsize = 9)
-plt.rc('ytick', labelsize = 9)
-font = {'family' : 'normal',
-        'weight' : 'bold',
+plt.rc('xtick', labelsize = 15)
+plt.rc('ytick', labelsize = 15)
+font = {'weight' : 'bold',
         'size'   : 13}
 plt.rc('font', **font)
 plt.plot(xVals, BHfract, marker='o')
