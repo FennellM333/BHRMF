@@ -127,10 +127,20 @@ xVals = Mmin +binsize*nub + binsize/2
 print("xVals", xVals)
 
 
+#Error bars, still unclear on exactly what this is doing or how to impliment it.
+def binomial_errors(confidence, ntrue,ntot):
+    import scipy.stats
+    alpha = 1 - confidence
+    lo = scipy.stats.beta.ppf(alpha / 2, ntrue, ntot - ntrue + 1) 
+    hi = scipy.stats.beta.ppf(1 - alpha / 2, ntrue + 1, ntot - ntrue)
+    return lo, hi
 
 
-
-
+ntrue = len(BHhalos)
+ntot = len(starHalos)
+confidence = 0.95
+lo, hi = binomial_errors(confidence,ntrue,ntot)
+print("lo,hi-", lo, hi )
 
 # Verify results
 #print("hMassBin counts:", [len(bin) for bin in hMassBin])
@@ -151,4 +161,5 @@ plt.plot(xVals, BHfract, marker='o')
 plt.xlabel('Log Halo Mass (M☉)')
 plt.ylabel('BH Occupation Fraction')
 plt.title("BH Occupation Fraction")
+plt.savefig("Bhgraph.png")
 plt.show()
