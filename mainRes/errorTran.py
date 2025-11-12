@@ -147,7 +147,8 @@ for i in range (len(counts)):
     lower = ntrue/ntot -lo 
     uppers.append(upper)
     lowers.append(lower)
-    
+
+boths=np.column_stack((uppers,lowers))
     
 
 # Verify results
