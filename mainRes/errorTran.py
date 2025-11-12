@@ -98,8 +98,8 @@ print("binsize= ", binsize)
 #hMassBin = assign_to_bins(hMass, bin_edges)
 #BHMassBin = assign_to_bins(BHMass, bin_edges)
 
-#counts=[]
-#Bcounts=[]
+counts=[]
+Bcounts=[]
 Mavg=[]
 BHfract=[]
 cBin=[]
@@ -109,9 +109,9 @@ for i in range(numBins):
     Mavgs= np.mean((hMass>=(Mmin+(binsize*i)))&(hMass<=(Mmin+(binsize*(i+1)))))
     Bcount= np.count_nonzero((BHhMass>=(Mmin+(binsize*i)))&(BHhMass<=(Mmin+(binsize*(i+1)))))
     print("Bcount-", Bcount)
-    #Bcounts.append(Bcount)
+    Bcounts.append(Bcount)
     print("count-", count)
-    #counts.append(count)
+    counts.append(count)
     print("average-",Mavg)
     Mavg.append(Mavgs)
     print("Average Bin Mass-", Mavg)
@@ -135,12 +135,20 @@ def binomial_errors(confidence, ntrue,ntot):
     hi = scipy.stats.beta.ppf(1 - alpha / 2, ntrue + 1, ntot - ntrue)
     return lo, hi
 
+uppers= []
+lowers= []
 
-ntrue = len(BHhalos)
-ntot = len(starHalos)
-confidence = 0.95
-lo, hi = binomial_errors(confidence,ntrue,ntot)
-print("lo,hi-", lo, hi )
+for i in range (len(counts)):
+    confidence = .95
+    ntrue = Bcounts[i]
+    ntot= counts[i]
+    lo, hi = binomial_errors(confidence,ntrue,ntot) 
+    upper= hi - ntrue/ntot 
+    lower = ntrue/ntot -lo 
+    uppers.append(upper)
+    lowers.append(lower)
+    
+    
 
 # Verify results
 #print("hMassBin counts:", [len(bin) for bin in hMassBin])
