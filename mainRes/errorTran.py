@@ -158,7 +158,9 @@ boths=np.column_stack((uppers,lowers))
 #avgMass = [(np.mean(np.concatenate((hMassBin[i], BHMassBin[i]))) if len(hMassBin[i]) + len(BHMassBin[i]) > 0 else 0) for i in range(numBins)]
 #avgLMass = np.log10(avgMass)
 #print("Average log mass per bin:", avgLMass)
+Berror= np.array([lowers, uppers])
 
+print("error array-", Berror)
 
 plt.rc('xtick', labelsize = 15)
 plt.rc('ytick', labelsize = 15)
@@ -166,7 +168,7 @@ font = {'weight' : 'bold',
         'size'   : 13}
 plt.rc('font', **font)
 plt.plot(xVals, BHfract, marker='o')
-#plt.yscale('log')
+plt.errorbar(xVals, BHfract,yerr= Berror, fmt= 'o', color = 'black', ecolor= 'black', ls='-', capsize=6, linewidth=2, markersize=8)
 plt.xlabel('Log Halo Mass (M☉)')
 plt.ylabel('BH Occupation Fraction')
 plt.title("BH Occupation Fraction")
