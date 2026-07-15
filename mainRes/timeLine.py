@@ -109,12 +109,13 @@ for file in files:
         print ('BH datamass', data)
         
 try:
-with open('foundTL.txt' , 'w') as f:
-    f.write("       |BH ID|          |Galaxy ID|   |Distance from Center|   \n") 
-    for a,b,c in zip(BHid,BHhalos,dCen):
-        f.write('{0:15}{1:15}         {2:.5}\n'.format(a,b,c))  
-except Exception as e:
-    print(f"Error: {e}")
+    with open('foundTL.txt' , 'w') as f:
+     f.write("       |BH ID|          |Galaxy ID|   |Distance from Center|   \n") 
+     for a,b,c in zip(BHid,BHhalos,dCen):
+          f.write('{0:15}{1:15}         {2:.5}\n'.format(a,b,c))  
+except: e:
+    print('error')
+        
     
 """
 # Loading files
